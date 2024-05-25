@@ -10,9 +10,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WindowsFormsApp3
+
 {
     public partial class Form1 : Form
-    { 
+    {
         private static readonly string findSpaces = @"[\s]+";
         private static readonly string findCommas = @"(?<=\d)\,(?=\d)+";
 
@@ -22,23 +23,23 @@ namespace WindowsFormsApp3
         private String d = null;
         private String oper = null;
         private bool iscleare = false;
-
+        private int k = 0;
         public Form1()
         {
             InitializeComponent();
         }
 
-        private void button13_Click(object sender, EventArgs e) 
+        private void button13_Click(object sender, EventArgs e)
         {
             if (textBox1.TextLength > 0)
             {
                 textBox1.Text = textBox1.Text.Substring(0, textBox1.TextLength - 1);
-                
+
             }
-            if(textBox1.TextLength == 0)
-                {
-                    textBox1.Text = "0";
-                }
+            if (textBox1.TextLength == 0)
+            {
+                textBox1.Text = "0";
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -50,6 +51,8 @@ namespace WindowsFormsApp3
         private void button12_Click(object sender, EventArgs e)
         {
             textBox1.Text = "0";
+            d = null;
+            oper = null;
         }
 
         private void button_Click(object sender, EventArgs e)
@@ -62,19 +65,21 @@ namespace WindowsFormsApp3
             iscleare = false;
 
         }
-
-        private void buttonMath_Click(object sender, EventArgs e)
+        private void operation(String operation)
         {
             if (textBox1.Text == null || textBox1.Text == "")
             {
                 return;
 
             }
-            oper = ((Button)sender).Text;
+            oper = operation;
             d = textBox1.Text;
             iscleare = true;
         }
-
+        private void buttonMath_Click(object sender, EventArgs e)
+        {
+            operation(((Button)sender).Text);
+        }
         private void button21_Click(object sender, EventArgs e)
         {
             if (textBox1.Text != null && textBox1.Text != "")
@@ -85,8 +90,8 @@ namespace WindowsFormsApp3
 
         private void button11_Click(object sender, EventArgs e)
         {
-            d = null;
-            oper = null;
+            textBox1.Text = null;
+            
         }
 
         private void button20_Click(object sender, EventArgs e)
@@ -124,15 +129,13 @@ namespace WindowsFormsApp3
             }
         }
 
-
-
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             if (textBox1.Text.Count(t => t == ',') == 1)
             {
                 return;
             }
-           
+
             try
             {
                 double d = double.Parse(textBox1.Text);
@@ -145,10 +148,52 @@ namespace WindowsFormsApp3
                     textBox1.Text = textBox1.Text.Substring(0, textBox1.TextLength - 1);
 
                 }
-                
+            }
+            if (textBox1.Text.Length == 0)
+            {
+                textBox1.Text = "0";
             }
 
         }
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (iscleare)
+            {
+                textBox1.Text = "0";
+                iscleare = false;
+            }
+            if (k!=16 && e.KeyValue >= 48 && e.KeyValue<= 57)  //цифры
+            {
+                int diget = ((int)e.KeyValue) - 48;
+                textBox1.Text = textBox1.Text + string.Format("{0}", diget);
+            }
+            if (k != 16 && e.KeyValue==187)  //равно
+            {
+                button20_Click(sender, e);
+            }
+            if (k != 16 && e.KeyValue == 189)  //вычитание
+            {
+                operation("-");
+            }
+            if (k != 16 && e.KeyValue == 191)  //деление
+            {
+                operation("÷");
+            }
+            if (k != 16 && e.KeyValue == 8)  //удаление
+            {
+                button13_Click(sender, e);
+            }
+            if (k == 16 && e.KeyValue == 187)  //сложение
+            {
+                operation("+");
+            }
+
+            if (k == 16 && e.KeyValue == 56)  //умножение
+            {
+                operation("×");
+            }
+            //textBox1.Text = string.Format("{0}", e.KeyValue);
+            k = e.KeyValue;
+        }
     }
 }
-  
